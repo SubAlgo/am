@@ -12,7 +12,7 @@
         <div class="form-group row">
             <label for="barcode" class="col-md-2 col-form-label">barcode: </label>
             <div class="col-md-6">
-                <input class="form-control" type="text" id="barcode" name="barcode"  required style="width: 70%;">
+                <input class="form-control" type="text" id="barcode" name="barcode"  required style="width: 70%;" autofocus>
             </div>
             <div class="col-md-4 text-left">
                 <span class="btn btn-primary" id="btn-check">check</span>
@@ -57,6 +57,43 @@
 <script type="application/javascript">
 
     $(document).ready(function() {
+        //----- mod function -----
+        let delay = (callback, ms) => {
+            var timer = 0;
+            return function() {
+                var context = this, args = arguments;
+                clearTimeout(timer);
+                timer = setTimeout(function () {
+                    callback.apply(context, args);
+                }, ms || 0);
+            };
+        }
+
+        //----- End mod function -----
+
+        $('#barcode').keyup(delay(function (e) {
+            let v = this.value
+            let barcode = v.trim()
+            if(barcode.length == 13) {
+                //console.log('Time elapsed!', v.length);
+                $.ajax({
+                    type: "GET",
+                    url: "./backend/edit_product.php?barcode=" + barcode +"&func=searchProduct",
+                    success: function (res) {
+                        if((typeof res) == "object") {
+                            $("#name").val(res['name'])
+                            $("#price").val(res['price'])
+                            $("#cost").val(res['cost'])
+                            $("#regis").prop("disabled", false)
+                            console.log(res['name'])
+                        } else {
+                            $("#regis").prop("disabled", true)
+                        }
+                    }
+                });
+            }
+        
+        }, 500));
 
         $("#btn-check").on("click", ()=> {
             let barcode = $("#barcode").val();
@@ -78,9 +115,7 @@
                         $("#price").val('')
                         $("#cost").val('')
                         $("#regis").prop("disabled", true)
-                    }
-                    
-                    
+                    }  
                 }
             });
         })
