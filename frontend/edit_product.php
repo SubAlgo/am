@@ -57,7 +57,56 @@
 <script type="application/javascript">
 
     $(document).ready(function() {
-        //----- mod function -----
+        
+
+
+        //----- Start Edit Product [ENTER] -----
+        $(document).on('keypress',function(e) {
+            //check keypress is "Enter".
+            if(e.which == 13) {
+                searchProducthHandle()
+            }
+        });
+        //----- End Edit Product [ENTER] -----
+
+
+        //----- Start Edit Product [Press button check] -----
+        $("#btn-check").on("click", ()=> {
+            searchProducthHandle()
+        })
+        //----- End Edit Product [Press button check] -----
+
+
+        //----- Start editProducthHandle -----
+        let searchProducthHandle = ()=> {
+            let barcode = $("#barcode").val();
+            barcode = barcode.trim()
+
+            if(barcode.length > 0) {
+                $.ajax({
+                    type: "GET",
+                    url: "./backend/edit_product.php?barcode=" + barcode +"&func=searchProduct",
+                    success: function (res) {
+                        if((typeof res) == "object") {
+                            $("#name").val(res['name'])
+                            $("#price").val(res['price'])
+                            $("#cost").val(res['cost'])
+                            $("#regis").prop("disabled", false)
+                            console.log(res['name'])
+                        } else {
+                            $("#name").val("")
+                            $("#price").val("")
+                            $("#cost").val("")
+                            $("#regis").prop("disabled", true)
+                        }
+                    }
+                });
+            }
+        }
+        //----- End editProducthHandle -----
+
+        //----- Start function delay-----
+        /*
         let delay = (callback, ms) => {
             var timer = 0;
             return function() {
@@ -68,9 +117,11 @@
                 }, ms || 0);
             };
         }
+        */
+        //----- End function delay -----
 
-        //----- End mod function -----
-
+        //----- Start 
+        /*
         $('#barcode').keyup(delay(function (e) {
             let v = this.value
             let barcode = v.trim()
@@ -94,31 +145,9 @@
             }
         
         }, 500));
+        */
 
-        $("#btn-check").on("click", ()=> {
-            let barcode = $("#barcode").val();
-            barcode = barcode.trim();
-
-            $.ajax({
-                type: "GET",
-                url: "./backend/edit_product.php?barcode=" + barcode +"&func=searchProduct",
-                success: function (res) {
-                    if((typeof res) == "object") {
-                        $("#name").val(res['name'])
-                        $("#price").val(res['price'])
-                        $("#cost").val(res['cost'])
-                        $("#regis").prop("disabled", false)
-                        console.log(res['name'])
-                    } else if(res.trim() == "null") {
-                        alert("ไม่พบข้อมูล")
-                        $("#name").val('')
-                        $("#price").val('')
-                        $("#cost").val('')
-                        $("#regis").prop("disabled", true)
-                    }  
-                }
-            });
-        })
+        
 
 
         $("#regis").on("click", ()=>{

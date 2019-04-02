@@ -47,8 +47,7 @@
         } else {
             header('Content-type: application/json');
             echo json_encode($pm->searchProduct($barcode));
-        }
-        
+        }   
     }
 
     if($func == "updateProduct")

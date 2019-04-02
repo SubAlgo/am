@@ -44,7 +44,7 @@
         }
 
         
-
+        // -- function สำหรับค้นหาข้อมูลสินค้า
         function searchProduct($barcode) 
         {
             $name;
@@ -80,7 +80,7 @@
             }
         }
 
-        //--
+        //-- funciotn สำหรับ แก้ไขข้อมูลสินค้า
         function updateProduct($barcode, $name, $price, $cost) 
         {
             $sql = "UPDATE `product` 

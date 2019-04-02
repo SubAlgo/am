@@ -57,58 +57,45 @@
 
     $(document).ready(function() {
 
-        //----- mod function -----
-        let delay = (callback, ms) => {
-            var timer = 0;
-            return function() {
-                var context = this, args = arguments;
-                clearTimeout(timer);
-                timer = setTimeout(function () {
-                    callback.apply(context, args);
-                }, ms || 0);
-            };
-        }
+        //----- Start function regisHandle -----
+        let regisHandle = ()=> {
+            let barcode = $("#barcode").val();
+            barcode = barcode.trim()
 
-        //----- End mod function -----
-        
-        //เช็คว่าได้ลงสินค้าหรือยัง
-        $("#btn-check").on("click", () => {
-            let barcode;
-            barcode = $("#barcode").val()
-
-            $.ajax({
-                type: "GET",
-                url: "./backend/regis_product.php?barcode=" + barcode +"&func=searchBarcode",
-                success: function (res) {
-                    if(res.trim() == "have") {
-                        alert("มีรายการสินค้านี้แล้ว")
-                    }
-                }
-            });
-            
-        })
-
-        
-
-        $('#barcode').keyup(delay(function (e) {
-            let v = this.value
-            let barcode = v.trim()
-            if(barcode.length == 13) {
-                //console.log('Time elapsed!', v.length);
+            if(barcode.length > 0) {
                 $.ajax({
                     type: "GET",
                     url: "./backend/regis_product.php?barcode=" + barcode +"&func=searchBarcode",
                     success: function (res) {
                         if(res.trim() == "have") {
                             alert("มีรายการสินค้านี้แล้ว")
+                            $("#barcode").val("");
+                        } else {
+                            $( "#name" ).focus();
                         }
                     }
                 });
             }
-        
-        }, 500));
-        //จบ - เช็คว่าได้ลงสินค้าหรือยัง
+        }
+        //----- End function regisHandle -----
 
+        //----- Start event check barcode by [press Enter] -----
+        $(document).on('keypress',function(e) {
+            //check keypress is "Enter".
+            if(e.which == 13) {
+                regisHandle();
+            }
+        });
+        //----- End event check barcode by [press Enter] -----
+
+
+        //----- Start event check barcode by [check button] -----
+        $("#btn-check").on("click", () => {
+            regisHandle();
+        })
+        //----- End event check barcode by [check button] -----
+
+ 
 
         //บันทึกสินค้า
         $("#regis").on("click", () =>{
