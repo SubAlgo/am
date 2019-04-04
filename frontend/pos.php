@@ -227,7 +227,7 @@
                             );
 
                             //สร้าง Element ปุ่มลบ list แถวรายการสินค้า
-                            
+
                             // ----- Start function สำหรับจัดการเลขแสดงลำดับหน้า List -----
                             let editNumberList = ()=> {
                                 let i ;
@@ -256,10 +256,18 @@
                                  /**
                                     ถ้าตัวแปร ck มีค่าเท่ากับ 0 แปลว่า ไม่มีรายการใน list แล้ว 
                                     ก็จะทำการ set เลขลำดับการโชว์ใหม่เป็น 1
+                                    และ clear ค่าในตัวแปรทั้งหมด
                                  */
                                     
                                 if(ck == 0) {
-                                    show = 1;
+                                    show    = 1;
+                                    eid     = 0; //สำหรับกำหนดค่าให้ element id
+                                    price   = [];   //array ราคาสินค้าต่อชิ้น
+                                    qty     = [];   //array จำนวนสินค้า
+                                    total   = [];   //array ราคารวมสินค่าต่อรายการ [price * qty]
+                                    showList = [];
+                                    sum     = 0;
+                                    result  = 0;  
                                 }
                                 
                                 result = calSum(total);
