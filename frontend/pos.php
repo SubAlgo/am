@@ -138,6 +138,9 @@
         let v       = 0;
         let s       = 0;
 
+        let show = 1;
+        let showList = [];
+
         // ----- Start fucntion สำหรับผลรวมราคาสินค้าทั้งหมด -----
         let calSum = (x)=> {
             x.reduce((sum, number) => {
@@ -175,9 +178,12 @@
                             let e_tr = $(`<tr id='list${num}'></tr>`);
                             
                             let e_no = $(`<th class='text-center pt-1 pb-1' >
-                                            <span id='order${num}'>#</span>
+                                            <span id='order${num}'>${show}</span>
                                         </th>`
                             );
+                            show = show + 1;
+                            showList.push(1);
+                            console.log(`showList ${showList}`);
                             
                             //สร้าง Element ช่องแสดงชื่อสินค้า
                             let e_name = $(`<td class="pt-1 pb-1" >
@@ -221,14 +227,57 @@
                             );
 
                             //สร้าง Element ปุ่มลบ list แถวรายการสินค้า
+                            
+                            // ----- Start function สำหรับจัดการเลขแสดงลำดับหน้า List -----
+                            let editNumberList = ()=> {
+                                let i ;
+                                let j = 1;
+                                let ck = 0; //ตัวแปร สำหรับเช็คว่ามีรายการสินค้าใน list หรือ ไม่
+
+                                // กำหนดเพื่อเป็น index ในการบอกว่า list ลำดับนี้ถูกลบไปแล้ว
+                                // คือ 1 = list ลำดับยังมีอยู่
+                                // 2 = list ลำดับถูกลบไปแล้ว
+                                //showList[`${num}`] = 0;
+                                showList[`${num}`] = 0;
+
+                                // total คือ array ของราคารวมในในแต่ละแถว [จำนวน * ราคาต่อชิ้น]
+                                total[num] = 0;
+                                
+                                for(i = 0; i < showList.length; i++) {
+                                    if(showList[i] != 0) {
+                                        $(`#order${i}`).text(`${j}`)
+                                        j = j + 1;
+                                        show = j;
+
+                                        ck = ck + showList[i]
+                                    }
+                                }
+
+                                 /**
+                                    ถ้าตัวแปร ck มีค่าเท่ากับ 0 แปลว่า ไม่มีรายการใน list แล้ว 
+                                    ก็จะทำการ set เลขลำดับการโชว์ใหม่เป็น 1
+                                 */
+                                    
+                                if(ck == 0) {
+                                    show = 1;
+                                }
+                                
+                                result = calSum(total);
+                                $(`#list${num}`).remove();
+                            }
+                            // ----- End function สำหรับจัดการเลขแสดงลำดับหน้า List -----
+
                             let e_close = $(`<td class="text-center pt-1 pb-1">
                                                 <span class="btn btn-danger pt-0 pb-0" id="del${num}">X</span>
                                             </td>`).on("click", ()=>{
 
-                                                total[num] = 0;
-                                                //คำนวณผลรวมของราคาสินค้าทั้งหมด เมื่อมีการลบรายการสินค้า
-                                                result = calSum(total)
-                                                $(`#list${num}`).remove();
+                                                
+                                                
+                                                //เรียกใช้ function editNumberList() เพื่อปรับเปลี่ยนลำดับการแสดงผลหน้า list
+                                                editNumberList();
+                                                console.log(`showList ${showList}`);
+
+                                                
                                                 console.log(total);
                             });
 
