@@ -1,4 +1,4 @@
-<div class="container" style="margin-top:10px;">
+﻿<div class="container" style="margin-top:10px;">
     <form action="" method="post">
     
         <div class="row" style="margin-top:10px;">
@@ -12,7 +12,7 @@
         <div class="form-group row">
             <label for="barcode" class="col-md-2 col-form-label">barcode: </label>
             <div class="col-md-6">
-                <input class="form-control" type="text" id="barcode" name="barcode"  required style="width: 70%;" autofocus>
+                <input class="form-control" type="text" id="barcode" name="barcode" autocomplete="off"  required style="width: 70%;" autofocus>
             </div>
             <div class="col-md-4 text-left">
                 <span class="btn btn-primary" id="btn-check">check</span>

@@ -1,4 +1,4 @@
-<!-- SUMMARY -->
+﻿<!-- SUMMARY -->
 <div class="container-fluid pb-0 " style="border: solid 1px; background-color: #b3ffcc;">
     
 
@@ -68,12 +68,12 @@
             
         </div>
         <div class="col-md-4 text-center">
-            <span class="btn btn-success mb-1  pb-0" id="cal" style="width: 150px; height: 50px; ">
+            <span class="btn btn-success mb-1 mt-1  pt-2" id="cal" style="width: 150px; height: 50px; ">
                 <b>คิดเงินทอน</b>
             </span>
 
-            <span class="btn btn-danger mb-1  pb-0" id="clear" style="width: 150px; height: 50px; ">
-                <b>Clear</b>
+            <span class="btn btn-danger mb-1 mt-1  pt-2" id="clear" style="width: 150px; height: 50px; ">
+                <b>Clear [F5]</b>
             </span>
         </div>
         
@@ -90,7 +90,7 @@
     <div class="row  mb-2 pt-2 pb-2" style="border: solid 1px; background-color: #b3ffcc;">
         <div class="col-md">
             <h2>
-                <b>Barcode:</b> <input type="text" id="barcode" style="width: 300px;" autofocus>
+                <b>Barcode:</b> <input type="text" id="barcode" autocomplete="off" style="width: 300px;" autofocus>
                 <span class="btn btn-primary ml-1" id="search">
                     <b>ค้นหา [Enter]</b>
                 </span>
@@ -267,7 +267,8 @@
                                     total   = [];   //array ราคารวมสินค่าต่อรายการ [price * qty]
                                     showList = [];
                                     sum     = 0;
-                                    result  = 0;  
+                                    result  = 0;
+                                    $(`#sum`).val("")
                                 }
                                 
                                 result = calSum(total);
