@@ -127,6 +127,7 @@
 
 
     $(document).ready(function() {
+        $('#barcode').focus()
 
         let eid = 0; //สำหรับกำหนดค่าให้ element id
 
@@ -158,6 +159,61 @@
         let searchHandle = ()=> {
             let barcode = $("#barcode").val()
             barcode = barcode.trim()
+
+            // check char is not Thai charactor
+            let firstCharOfBarcode = barcode.charCodeAt(0)
+            // console.log(firstCharOfBarcode)
+            var newBarcode = ""
+            switch (firstCharOfBarcode) {
+                case 3653: case 47: case 45: case 3616: case 3606: case 3640: case 3638: case 3588: case 3605:
+                    let len = barcode.length
+                    for (let i = 0; i < len; i++) {
+                        switch (barcode.charAt(i)) {
+                            case "ๅ":
+                                newBarcode = newBarcode + "1"
+                                break;
+                            case "/":
+                                newBarcode = newBarcode + "2"
+                                break;
+                            case "-":
+                                newBarcode = newBarcode + "3"
+                                break;
+                            case "ภ":
+                                newBarcode = newBarcode + "4"
+                                    break;
+                            case "ถ":
+                                newBarcode = newBarcode + "5"
+                                break;
+                            case "ุ":
+                                newBarcode = newBarcode + "6"
+                                break;
+                            case "ึ":
+                                newBarcode = newBarcode + "7"
+                                break;
+                            case "ค":
+                                newBarcode = newBarcode + "8"
+                                break;
+                            case "ต":
+                                newBarcode = newBarcode + "9"
+                                break;
+                            case "จ":
+                                newBarcode = newBarcode + "0"
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                    break;
+                default:
+                    break;
+            }
+
+            if (newBarcode != "") {
+                barcode = newBarcode
+            }
+            
+            // var str = "HELLO WORLD";
+            // var n = str.charCodeAt(0);
             if(barcode.length > 0) {
                 $.ajax({
                     type: "get",

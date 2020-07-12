@@ -57,7 +57,7 @@
 <script type="application/javascript">
 
     $(document).ready(function() {
-        
+        $("#barcode").focus()
 
 
         //----- Start Edit Product [ENTER] -----
