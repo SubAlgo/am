@@ -11,7 +11,7 @@
         <div class="col-md-3 text-right">
             <span>
                 <h1>
-                    <input class="text-right input" id="receive" type="number" style="width: 200px;" >
+                    <input class="text-right input" id="receive" name="receive" type="number" style="width: 200px;" >
                 </h1>
             </span>
         </div>
@@ -403,6 +403,7 @@
 
         // ----- Start Event กดปุ่มบน keyboard -----
         $(document).on('keypress',function(e) {
+            //console.log(e);
           
           
             // ----- Start Event กดปุ่ม "Enter" เพื่อค้นหาสินค้า -----
@@ -415,12 +416,15 @@
             if(e.keyCode == 32){
                 let sum_value = $("#sum").val();
 
+                console.log(sum_value);
                 if(sum_value == "") {
                     alert("ยังไม่มีรายการสินค้าที่ต้องคำนวณ")
                     $("#barcode").val("");
-                    return false
+                    //return false
+                } else {
+                    window.setTimeout(() =>$("#receive").focus(), 0);
                 }
-                $("#receive").focus();   
+                 
             }
             // ----- End Event กดปุ่ม "spacebar" เพื่อไป focus ที่ช่อง input รับเงิน ----- 
 
