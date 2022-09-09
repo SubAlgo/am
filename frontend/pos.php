@@ -434,7 +434,7 @@
 
 
         // ----- Start Event change input รับเงิน -----
-        $("#receive").on("change", ()=>{
+        $("#receive").on("keyup", ()=>{
             let x = $("#receive").val() - $("#sum").val();
             $("#change").val(x)
         })

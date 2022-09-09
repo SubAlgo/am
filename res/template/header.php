@@ -4,7 +4,7 @@
    left: 0;
    top: 0;
    width: 100%;
-   background-color: red;
+   background-color: none;
    color: white;
    text-align: center;
 }
