@@ -16,7 +16,7 @@
                     </div>
 
                 </div>
-                <div class="col-md-4 text-right text-muted"><br /><span>รวมจำนวนสินค้า x ชิ้น </span></div>
+                <div class="col-md-4 text-right text-muted" id="total-qty"></div>
             </div>
             <!-- End barcode input -->
 
@@ -29,7 +29,7 @@
                         <th style="width: 10%">จำนวน</th>
                         <th style="width: 10%">ราคาต่อชิ้น</th>
                         <th style="width: 15%">รวม</th>
-                        <th style="width: 10%">ลบรายการ</th>
+                        <th style="width: 10%">ลบ</th>
                     </tr>
                 </thead>
                 <!-- End Set Header -->
@@ -46,7 +46,9 @@
                     <table class="cal-table">
                         <tbody>
                             <tr>
-                                <td class="f-26">รับเงิน</td>
+                                <td class="f-26">รับเงิน <br/>
+                                <small id="receive-help" class="form-text text-muted f-14">[Spacebar]</small>
+                            </td>
                                 <td>
                                     <div class="input-group mb-3">
                                         <input type="number" class="form-control form-control-lg" placeholder="" aria-label="receive" aria-describedby="basic-addon2" name="receive" id="receive">
@@ -86,10 +88,7 @@
                 </div>
 
                 <div class="card-footer text-muted">
-                    <div class="btn-group btn-group-cal" role="group" aria-label="">
-                        <button type="button" class="btn btn-success" id="cal">คิดเงินทอน <br /> [Enter]</button>
-                        <button type="button" class="btn btn-outline-danger" id="clear">ล้างข้อมูล <br /> [F5]</button>
-                    </div>
+                    <button type="button" class="btn btn-danger btn-block" id="clear">ล้างข้อมูล <br /> [F5]</button>
                 </div>
             </div>
         </div>
@@ -98,34 +97,57 @@
 </div>
 
 <script type="text/javascript">
+    let basket = [];
+
+    function removeItem(id) {
+        basket = basket.filter(b => b.id != id);
+        calculate()
+    }
+
+    function changeQty(id, index, value) {
+        if (value < 1) {
+            removeItem(id)
+            return
+        }
+        basket[index].qty = parseInt(value)
+        calculate()
+    }
+
+    const calculate = () => {
+        const sum = basket.reduce((result, product) => {
+            return result + (product.price * product.qty)
+        }, 0)
+        $("#sum").val(sum)
+        renderTable();
+    }
+
+    function renderTable() {
+        const productList = []
+        let totalQty = 0
+        basket.map((p, index) => {
+            const product = `<tr>
+                    <td>${index + 1}</td>
+                    <td>${p.name}</td>
+                    <td><input class="text-center form-control" type="number" id="qty-${index}" value="${p.qty}" onchange="changeQty(${p.id}, ${index}, this.value)"></td>
+                    <td class="text-right">${p.price}<span class="text-muted">.00</span></td>
+                    <td class="text-right">${p.price * p.qty}<span class="text-muted">.00</span></td>
+                    <td class="text-center pt-1 pb-1">
+                        <button type="button" class="close" aria-label="Close" id="del-${index}" onclick="removeItem(${p.id})">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </td>
+                </tr>`
+            productList.push(product)
+            totalQty += p.qty
+        })
+        document.getElementById("saleList").innerHTML = productList.join("")
+        if (totalQty > 0) {
+            document.getElementById("total-qty").innerHTML = `<span>รวมจำนวนสินค้า ${totalQty} ชิ้น </span>`
+        }
+    }
+
     $(document).ready(function() {
         $('#barcode').focus()
-
-        let eid = 0; //สำหรับกำหนดค่าให้ element id
-
-        let price = []; //array ราคาสินค้าต่อชิ้น
-        let qty = []; //array จำนวนสินค้า
-        let total = []; //array ราคารวมสินค่าต่อรายการ [price * qty]
-        let sum = 0;
-        let result = 0; //ผลรวมราคาสินค้าทั้งหมด
-        let v = 0;
-        let s = 0;
-
-        let show = 1;
-        let showList = [];
-
-        // ----- Start fucntion สำหรับผลรวมราคาสินค้าทั้งหมด -----
-        let calSum = (x) => {
-            x.reduce((sum, number) => {
-                let r = sum + number
-                $(`#sum`).val(sum + number)
-                console.log(`result : ${r}`)
-                return sum + number
-            }, 0)
-        }
-        // ----- End fucntion สำหรับผลรวมราคาสินค้าทั้งหมด -----
-
-
 
         // ----- Start function สำหรับค้นหาข้อมูลสินค้า และ สร้าง list ข้อมูลสินค้า -----
         let searchHandle = () => {
@@ -134,7 +156,6 @@
 
             // check char is not Thai charactor
             let firstCharOfBarcode = barcode.charCodeAt(0)
-            // console.log(firstCharOfBarcode)
             var newBarcode = ""
             switch (firstCharOfBarcode) {
                 case 3653:
@@ -192,160 +213,25 @@
                 barcode = newBarcode
             }
 
-            // var str = "HELLO WORLD";
-            // var n = str.charCodeAt(0);
             if (barcode.length > 0) {
                 $.ajax({
                     type: "get",
                     url: "./backend/pos.php?barcode=" + barcode + "&func=searchProduct",
                     success: function(res) {
                         if ((typeof res) == "object") {
-                            let num = eid;
-                            price[num] = res['price'];
-                            qty[num] = 1;
-                            total[num] = price[num] * qty[num];
-                            console.log(res['name'])
-                            console.log(res['price'])
-
-                            $("#change").val("");
-
-
-
-                            let e_tr = $(`<tr id='list${num}'></tr>`);
-
-                            let e_no = $(`<th class='text-center pt-1 pb-1' >
-                                            <span id='order${num}'>${show}</span>
-                                        </th>`);
-                            show = show + 1;
-                            showList.push(1);
-                            console.log(`showList ${showList}`);
-
-                            //สร้าง Element ช่องแสดงชื่อสินค้า
-                            let e_name = $(`<td class="pt-1 pb-1" >
-                                            <span id='name${num}'>${res['name']}</span>
-                                        </td>`);
-
-                            //สร้าง Element container ของ ช่องกำหนดปริมาณสินค้าที่ขาย
-                            let e_containet_qty = $(`<td class="pt-1 pb-1 text-center" id="container-qty${num}" >
-                                        </td>`);
-
-                            //สร้าง Element ช่องกำหนดปริมาณสินค้าที่ขาย
-                            let e_qty = $(`<input class="text-center form-control form-control-sm" type="number" id="qty${num}" value="${qty[num]}" style="width: 70px">`)
-                                // Event เปลี่ยนจำนวนสินค้า
-                                .on("change", () => {
-                                    v = $(`#qty${num}`).val();
-                                    s = v * price[num]
-                                    $(`#total${num}`).text(s)
-                                    total[num] = s
-                                    console.log(total)
-                                    //คำนวณผลรวมของราคาสินค้าทั้งหมด เมื่อมีการเปลี่ยนจำนวนสินค้า
-                                    result = calSum(total)
-                                    $("#change").val("")
-                                });
-
-                            //สร้าง Element ช่องแสดงราคาของสินค้า
-                            let e_price = $(`<td class="text-center pt-1 pb-1">
-                                                <span class="text-center pt-0 pb-0" id="price${num}">
-                                                    ${price[num]}
-                                                </span>
-                                            </td>`);
-
-                            //สร้าง Element ช่องแสดงผลลัพธ์ราคารวมของรายการ [price * qyt]
-                            let e_total = $(`<td class="text-center pt-1 pb-1">
-                                                <span id="total${num}">
-                                                    ${total[num]}
-                                                </span>
-                                            </td>`);
-
-                            //สร้าง Element ปุ่มลบ list แถวรายการสินค้า
-
-                            // ----- Start function สำหรับจัดการเลขแสดงลำดับหน้า List -----
-                            let editNumberList = () => {
-                                let i;
-                                let j = 1;
-                                let ck = 0; //ตัวแปร สำหรับเช็คว่ามีรายการสินค้าใน list หรือ ไม่
-
-                                // กำหนดเพื่อเป็น index ในการบอกว่า list ลำดับนี้ถูกลบไปแล้ว
-                                // คือ 1 = list ลำดับยังมีอยู่
-                                // 2 = list ลำดับถูกลบไปแล้ว
-                                //showList[`${num}`] = 0;
-                                showList[`${num}`] = 0;
-
-                                // total คือ array ของราคารวมในในแต่ละแถว [จำนวน * ราคาต่อชิ้น]
-                                total[num] = 0;
-
-                                for (i = 0; i < showList.length; i++) {
-                                    if (showList[i] != 0) {
-                                        $(`#order${i}`).text(`${j}`)
-                                        j = j + 1;
-                                        show = j;
-
-                                        ck = ck + showList[i]
-                                    }
-                                }
-
-                                /**
-                                   ถ้าตัวแปร ck มีค่าเท่ากับ 0 แปลว่า ไม่มีรายการใน list แล้ว 
-                                   ก็จะทำการ set เลขลำดับการโชว์ใหม่เป็น 1
-                                   และ clear ค่าในตัวแปรทั้งหมด
-                                */
-
-                                if (ck == 0) {
-                                    show = 1;
-                                    eid = 0; //สำหรับกำหนดค่าให้ element id
-                                    price = []; //array ราคาสินค้าต่อชิ้น
-                                    qty = []; //array จำนวนสินค้า
-                                    total = []; //array ราคารวมสินค่าต่อรายการ [price * qty]
-                                    showList = [];
-                                    sum = 0;
-                                    result = 0;
-                                    $(`#sum`).val("")
-                                }
-
-                                result = calSum(total);
-                                $(`#list${num}`).remove();
+                            let item = {};
+                            item = {
+                                id: Date.now(),
+                                name: res['name'],
+                                price: parseInt(res['price']),
+                                qty: 1
                             }
-                            // ----- End function สำหรับจัดการเลขแสดงลำดับหน้า List -----
-
-                            let e_close = $(`<td class="text-center pt-1 pb-1">
-                                                <span class="btn btn-danger pt-0 pb-0" id="del${num}">X</span>
-                                            </td>`).on("click", () => {
-
-
-
-                                //เรียกใช้ function editNumberList() เพื่อปรับเปลี่ยนลำดับการแสดงผลหน้า list
-                                editNumberList();
-                                console.log(`showList ${showList}`);
-
-
-                                console.log(total);
-                            });
-
-
-                            // ----- Start append Element to list -----
-                            $("#saleList").append(e_tr);
-
-                            $(e_tr).append(e_no);
-                            $(e_tr).append(e_name);
-                            $(e_tr).append(e_containet_qty);
-                            $(e_containet_qty).append(e_qty);
-                            $(e_tr).append(e_price);
-                            $(e_tr).append(e_total);
-                            $(e_tr).append(e_close);
-                            // ----- End append Element to list -----
-
-                            eid = eid + 1;
-
-                            //คำนวณผลรวมของราคาสินค้าทั้งหมด เมื่อมีการเพิ่มรายการสินค้า
-                            result = calSum(total)
-
-
-
+                            basket.push(item);
+                            calculate();
+                            $("#change").val("");
                         } else {
                             alert("ไม่พบรายการสินค้าที่ค้นหา")
                         }
-
-                        //alert("fuck: " + eid)
                         $("#barcode").val("") //clear barcode input
                     }
                 });
@@ -353,34 +239,8 @@
         }
         // ----- End function สำหรับค้นหาข้อมูลสินค้า และ สร้าง list ข้อมูลสินค้า -----
 
-        // ----- Start function คำนวณเงินทอน -----
-        let cal = () => {
-            let sum_value = $("#sum").val();
-            let rec_value = $("#receive").val();
-            if (sum_value > 0 && rec_value > 0) {
-
-                let x = rec_value - sum_value;
-                $("#change").val(x);
-                $("#receive").focus();
-                return
-            }
-        }
-        // ----- End function คำนวณเงินทอน -----
-
-
-        // ----- Start Event เหตุการณ์ กดปุ่ม คิดเงินทอน -----
-        $("#cal").on("click", () => {
-            cal();
-        })
-        // ----- End Event เหตุการณ์ กดปุ่ม คิดเงินทอน -----
-
-
-
         // ----- Start Event กดปุ่มบน keyboard -----
         $(document).on('keypress', function(e) {
-            //console.log(e);
-
-
             // ----- Start Event กดปุ่ม "Enter" เพื่อค้นหาสินค้า -----
             if (e.which == 13) {
                 searchHandle()
@@ -390,8 +250,6 @@
             // ----- Start Event กดปุ่ม "spacebar" เพื่อไป focus ที่ช่อง input รับเงิน -----   
             if (e.keyCode == 32) {
                 let sum_value = $("#sum").val();
-
-                console.log(sum_value);
                 if (sum_value == "") {
                     alert("ยังไม่มีรายการสินค้าที่ต้องคำนวณ")
                     $("#barcode").val("");
@@ -399,19 +257,25 @@
                 } else {
                     window.setTimeout(() => $("#receive").focus(), 0);
                 }
-
             }
             // ----- End Event กดปุ่ม "spacebar" เพื่อไป focus ที่ช่อง input รับเงิน ----- 
 
-
+            // F5
+            if (e.keyCode === 116) {
+                e.preventDefault();
+                clear();
+            }
         });
         // ----- End Event กดปุ่มบน keyboard -----
 
 
         // ----- Start Event change input รับเงิน -----
         $("#receive").on("keyup", () => {
-            let x = $("#receive").val() - $("#sum").val();
-            $("#change").val(x)
+            const receive = $("#receive").val();
+            if (receive > 0) {
+                let x = receive - $("#sum").val();
+                $("#change").val(x)
+            }
         })
         // ----- End Event change input รับเงิน -----
 
@@ -424,15 +288,17 @@
 
         // ----- Start Event คลิ๊กปุ่ม clear -----
         $("#clear").on("click", () => {
-            location.reload();
+            clear();
         })
         // ----- End Event คลิ๊กปุ่ม clear -----
 
-
-
-
-
-
-
+        const clear = () => {
+            basket = [];
+            calculate();
+            $("#receive").val(null);
+            $("#sum").val(null);
+            $("#change").val(null);
+            $('#barcode').focus();
+        }
     });
 </script>
