@@ -8,9 +8,9 @@
                         <div class="input-group-prepend">
                             <span class="input-group-text" id="basic-addon1">Barcode</span>
                         </div>
-                        <input type="text" class="form-control" placeholder="" aria-label="barcode" aria-describedby="button-addon2" id="barcode" autocomplete="off" autofocus>
+                        <input type="text" class="form-control form-control-lg" placeholder="" aria-label="barcode" aria-describedby="button-addon2" id="barcode" autocomplete="off" autofocus>
                         <div class="input-group-append">
-                            <button class="btn btn-primary" type="button" id="button-addon2" id="search">ค้นหา
+                            <button class="btn btn-primary btn btn-lg" type="button" id="button-addon2" id="search">ค้นหา
                                 [Enter]</button>
                         </div>
                     </div>
@@ -88,7 +88,7 @@
                 </div>
 
                 <div class="card-footer text-muted">
-                    <button type="button" class="btn btn-danger btn-block" id="clear">ล้างข้อมูล <br /> [F5]</button>
+                    <button type="button" class="btn btn-lg btn-danger btn-block" id="clear">ล้างข้อมูล <br /> [F5]</button>
                 </div>
             </div>
         </div>
