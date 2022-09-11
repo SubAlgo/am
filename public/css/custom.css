@@ -15,7 +15,7 @@
 
 body {
   font-family: "Thonburi", 'Cordia New', Courier, monospace !important;
-  font-size: 18px;
+  font-size: 22px;
   background-color: #f8f9fa;
 }
 
@@ -66,7 +66,7 @@ body {
 table th,
 td {
   vertical-align: middle !important;
-  font-size: 18px;
+  font-size: 22px;
 }
 
 button.close {
@@ -74,4 +74,8 @@ button.close {
   float: unset;
   opacity: 1;
   font-size: 28px;
+}
+
+input{
+  font-size: 22px !important;
 }
