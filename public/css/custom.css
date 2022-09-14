@@ -82,7 +82,12 @@ input{
 }
 
 .cal-table .form-control-lg {
-  font-size: 60px !important;
+  font-size: 101px !important;
   font-weight: 900;
-  height: calc(2.875rem + 16px) !important;
+  font-family: 'Calibri' !important;
+  height: calc(2.875rem + 46px) !important;
+}
+
+.input-group-text-lg {
+  font-size: 48px !important;
 }

@@ -53,7 +53,7 @@
                                     <div class="input-group mb-3">
                                         <input type="number" class="form-control form-control-lg" placeholder="" aria-label="receive" aria-describedby="basic-addon2" name="receive" id="receive">
                                         <div class="input-group-append">
-                                            <span class="input-group-text" id="basic-addon2">บาท</span>
+                                            <span class="input-group-text input-group-text-lg" id="basic-addon2">บาท</span>
                                         </div>
                                     </div>
 
@@ -65,7 +65,7 @@
                                     <div class="input-group mb-3">
                                         <input type="text" class="form-control form-control-lg" placeholder="" aria-label="sum" aria-describedby="basic-addon2" id="sum" readonly>
                                         <div class="input-group-append">
-                                            <span class="input-group-text" id="basic-addon2">บาท</span>
+                                            <span class="input-group-text input-group-text-lg" id="basic-addon2">บาท</span>
                                         </div>
                                     </div>
                                 </td>
@@ -77,7 +77,7 @@
                                     <div class="input-group mb-3">
                                         <input type="text" class="form-control form-control-lg" placeholder="" aria-label="change" aria-describedby="basic-addon2" id="change" readonly>
                                         <div class="input-group-append">
-                                            <span class="input-group-text" id="basic-addon2">บาท</span>
+                                            <span class="input-group-text input-group-text-lg" id="basic-addon2">บาท</span>
                                         </div>
                                     </div>
 
