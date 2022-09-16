@@ -46,7 +46,7 @@
                     <table class="cal-table">
                         <tbody>
                             <tr>
-                                <td class="f-26">รับเงิน <br/>
+                                <td>รับเงิน <br/>
                                 <small id="receive-help" class="form-text text-muted f-14">[Spacebar]</small>
                             </td>
                                 <td>
@@ -60,7 +60,7 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td class="f-26">ราคารวม</td>
+                                <td>ราคารวม</td>
                                 <td>
                                     <div class="input-group mb-3">
                                         <input type="text" class="form-control form-control-lg" placeholder="" aria-label="sum" aria-describedby="basic-addon2" id="sum" readonly>
@@ -71,7 +71,7 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td class="f-26">เงินทอน</td>
+                                <td>เงินทอน</td>
                                 <td>
 
                                     <div class="input-group mb-3">
