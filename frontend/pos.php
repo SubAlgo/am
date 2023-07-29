@@ -119,6 +119,12 @@
         }, 0)
         $("#sum").val(sum)
         renderTable();
+
+        const receive = $("#receive").val();
+        if (receive > 0) {
+            let x = receive - sum;
+            $("#change").val(x)
+        }
     }
 
     function renderTable() {
